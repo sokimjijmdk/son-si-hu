@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>손시후의 목표와 소개</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #f4f7f2;
+      color: #26352b;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    h1, h2, p {
+      margin-top: 0;
+    }
+
+    /* D-day */
+    .dday {
+      background: #e3efdc;
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .dday-label {
+      font-size: 15px;
+      color: #536d4e;
+      margin-bottom: 8px;
+    }
+
+    .dday-number {
+      font-size: 36px;
+      font-weight: bold;
+      color: #386641;
+    }
+
+    /* 프로필 카드 */
+    .profile {
+      background: white;
+      border-radius: 20px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 5px 20px #0000000a;
+      margin-bottom: 24px;
+    }
+
+    .emoji {
+      font-size: 64px;
+      margin-bottom: 12px;
+    }
+
+    .profile h1 {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .intro {
+      line-height: 1.7;
+      color: #59645b;
+      margin-bottom: 20px;
+    }
+
+    .tags {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .tag {
+      background: #edf4e9;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+
+    .github-button {
+      display: inline-block;
+      background: #386641;
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+    }
+
+    .github-button:hover {
+      background: #284d31;
+    }
+
+    /* 만다라트 */
+    .goals {
+      background: white;
+      border-radius: 20px;
+      padding: 24px 16px;
+      box-shadow: 0 5px 20px #0000000a;
+    }
+
+    .goals h2 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .help {
+      text-align: center;
+      color: #748074;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .mandalart {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .goal-cell {
+      width: 100%;
+      min-width: 0;
+      min-height: 100px;
+      padding: 10px 5px;
+      border: 1px solid #d9e5d4;
+      border-radius: 10px;
+      background: #f8fbf6;
+      color: #26352b;
+      font-family: inherit;
+      font-size: 13px;
+      text-align: center;
+      overflow-wrap: anywhere;
+      resize: vertical;
+    }
+
+    .goal-cell:focus {
+      outline: 2px solid #6b9b65;
+      background: #fff;
+    }
+
+    .goal-cell.center {
+      background: #386641;
+      color: white;
+      border-color: #386641;
+      font-weight: bold;
+    }
+
+    .goal-cell.center:focus {
+      outline-color: #9fc99a;
+    }
+
+    .reset-button {
+      display: block;
+      margin: 16px auto 0;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 9px;
+      background: #edf4e9;
+      color: #386641;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 16px 10px;
+      }
+
+      .profile {
+        padding: 24px 14px;
+      }
+
+      .goals {
+        padding: 20px 10px;
+      }
+
+      .goal-cell {
+        min-height: 90px;
+        font-size: 12px;
+        padding: 7px 3px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <!-- D-day -->
+    <section class="dday">
+      <p class="dday-label">수능까지</p>
+      <div class="dday-number" id="ddayNumber">D-390</div>
+    </section>
+
+    <!-- 프로필 카드 -->
+    <section class="profile">
+      <div class="emoji">🥬</div>
+
+      <h1>손시후</h1>
+
+      <p class="intro">
+        공학과 식물을 좋아하는 고등학교 2학년입니다
+      </p>
+
+      <div class="tags">
+        <span class="tag">📐 수학</span>
+        <span class="tag">⚛️ 물리</span>
+        <span class="tag">🌱 식물</span>
+      </div>
+
+      <!-- 아래 주소를 본인의 GitHub 주소로 바꾸세요 -->
+      <a
+        class="github-button"
+        href="https://github.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        내 깃허브
+      </a>
+    </section>
+
+    <!-- 만다라트 목표표 -->
+    <section class="goals">
+      <h2>나의 목표</h2>
+      <p class="help">칸을 눌러서 고칠 수 있어요</p>
+
+      <div class="mandalart" id="mandalart">
+        <textarea class="goal-cell">매일 30분 영어 듣기</textarea>
+        <textarea class="goal-cell">국어 오답노트</textarea>
+        <textarea class="goal-cell">주 3회 운동</textarea>
+
+        <textarea class="goal-cell">독서 월 2권</textarea>
+        <textarea class="goal-cell center">전기정보공학 진학</textarea>
+        <textarea class="goal-cell">과학 동아리 발표</textarea>
+
+        <textarea class="goal-cell">7시간 수면</textarea>
+        <textarea class="goal-cell">봉사활동 20시간</textarea>
+        <textarea class="goal-cell">코딩 포트폴리오</textarea>
+      </div>
+
+      <button class="reset-button" id="resetButton">
+        처음 목표로 되돌리기
+      </button>
+    </section>
+
+  </main>
+
+  <script>
+    // D-day를 D-390으로 고정
+    document.getElementById("ddayNumber").textContent = "D-390";
+
+    // 만다라트 목표 저장 기능
+    const cells = document.querySelectorAll(".goal-cell");
+    const resetButton = document.getElementById("resetButton");
+    const storageKey = "myMandalaGoals_v1";
+
+    const defaultGoals = [
+      "매일 30분 영어 듣기",
+      "국어 오답노트",
+      "주 3회 운동",
+      "독서 월 2권",
+      "전기정보공학 진학",
+      "과학 동아리 발표",
+      "7시간 수면",
+      "봉사활동 20시간",
+      "코딩 포트폴리오"
+    ];
+
+    // 저장된 목표 불러오기
+    try {
+      const savedGoals = localStorage.getItem(storageKey);
+
+      if (savedGoals) {
+        const goals = JSON.parse(savedGoals);
+
+        cells.forEach((cell, index) => {
+          if (typeof goals[index] === "string") {
+            cell.value = goals[index];
+          }
+        });
+      }
+    } catch (error) {
+      console.log("저장된 목표를 불러오지 못했습니다.");
+    }
+
+    // 목표를 수정할 때 자동 저장
+    cells.forEach((cell) => {
+      cell.addEventListener("input", () => {
+        const goals = Array.from(cells).map((item) => item.value);
+
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(goals));
+        } catch (error) {
+          console.log("목표를 저장하지 못했습니다.");
+        }
+      });
+    });
+
+    // 기본 목표로 되돌리기
+    resetButton.addEventListener("click", () => {
+      const confirmed = confirm(
+        "목표를 처음 상태로 되돌릴까요?"
+      );
+
+      if (!confirmed) return;
+
+      cells.forEach((cell, index) => {
+        cell.value = defaultGoals[index];
+      });
+
+      try {
+        localStorage.setItem(
+          storageKey,
+          JSON.stringify(defaultGoals)
+        );
+      } catch (error) {
+        console.log("목표를 저장하지 못했습니다.");
+      }
+    });
+  </script>
+</body>
+</html>
