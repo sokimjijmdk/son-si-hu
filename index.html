@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -9,6 +10,27 @@
   <style>
     * {
       box-sizing: border-box;
+    }
+
+    :root {
+      --accent: #386641;
+      --accent-dark: #284d31;
+      --accent-light: #e3efdc;
+      --accent-pale: #edf4e9;
+      --cell-bg: #f8fbf6;
+      --cell-border: #d9e5d4;
+      --focus-color: #6b9b65;
+    }
+
+    /* 파란색 테마 */
+    body.theme-blue {
+      --accent: #2457a7;
+      --accent-dark: #193f7a;
+      --accent-light: #e0ebfb;
+      --accent-pale: #eaf1fd;
+      --cell-bg: #f6f9ff;
+      --cell-border: #d3e0f5;
+      --focus-color: #6c94d5;
     }
 
     body {
@@ -29,9 +51,66 @@
       margin-top: 0;
     }
 
+    /* 색상 선택 버튼 */
+    .theme-picker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 14px;
+      background: white;
+      border-radius: 16px;
+    }
+
+    .theme-label {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 2px;
+      font-size: 14px;
+      color: #59645b;
+    }
+
+    .theme-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 112px;
+      padding: 10px 16px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      font: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      background: white;
+      color: #26352b;
+    }
+
+    .theme-button[aria-pressed="true"] {
+      border-color: #26352b;
+      font-weight: bold;
+    }
+
+    .color-dot {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    .green-dot {
+      background: #386641;
+    }
+
+    .blue-dot {
+      background: #2457a7;
+    }
+
     /* D-day */
     .dday {
-      background: #e3efdc;
+      background: var(--accent-light);
       border-radius: 18px;
       padding: 20px;
       text-align: center;
@@ -40,14 +119,14 @@
 
     .dday-label {
       font-size: 15px;
-      color: #536d4e;
+      color: var(--accent);
       margin-bottom: 8px;
     }
 
     .dday-number {
       font-size: 36px;
       font-weight: bold;
-      color: #386641;
+      color: var(--accent);
     }
 
     /* 프로필 카드 */
@@ -85,7 +164,7 @@
     }
 
     .tag {
-      background: #edf4e9;
+      background: var(--accent-pale);
       padding: 8px 14px;
       border-radius: 20px;
       font-size: 14px;
@@ -93,7 +172,7 @@
 
     .github-button {
       display: inline-block;
-      background: #386641;
+      background: var(--accent);
       color: white;
       text-decoration: none;
       padding: 12px 20px;
@@ -101,10 +180,10 @@
     }
 
     .github-button:hover {
-      background: #284d31;
+      background: var(--accent-dark);
     }
 
-    /* 만다라트 */
+    /* 만다라트 목표표 */
     .goals {
       background: white;
       border-radius: 20px;
@@ -135,9 +214,9 @@
       min-width: 0;
       min-height: 100px;
       padding: 10px 5px;
-      border: 1px solid #d9e5d4;
+      border: 1px solid var(--cell-border);
       border-radius: 10px;
-      background: #f8fbf6;
+      background: var(--cell-bg);
       color: #26352b;
       font-family: inherit;
       font-size: 13px;
@@ -147,19 +226,19 @@
     }
 
     .goal-cell:focus {
-      outline: 2px solid #6b9b65;
-      background: #fff;
+      outline: 2px solid var(--focus-color);
+      background: white;
     }
 
     .goal-cell.center {
-      background: #386641;
+      background: var(--accent);
       color: white;
-      border-color: #386641;
+      border-color: var(--accent);
       font-weight: bold;
     }
 
     .goal-cell.center:focus {
-      outline-color: #9fc99a;
+      outline-color: var(--focus-color);
     }
 
     .reset-button {
@@ -168,8 +247,8 @@
       padding: 10px 16px;
       border: none;
       border-radius: 9px;
-      background: #edf4e9;
-      color: #386641;
+      background: var(--accent-pale);
+      color: var(--accent);
       font-size: 14px;
       cursor: pointer;
     }
@@ -199,6 +278,31 @@
 <body>
   <main class="container">
 
+    <!-- 색상 선택 -->
+    <section class="theme-picker">
+      <p class="theme-label">🎨 원하는 색상을 선택하세요</p>
+
+      <button
+        class="theme-button"
+        id="greenTheme"
+        type="button"
+        aria-pressed="true"
+      >
+        <span class="color-dot green-dot"></span>
+        초록색
+      </button>
+
+      <button
+        class="theme-button"
+        id="blueTheme"
+        type="button"
+        aria-pressed="false"
+      >
+        <span class="color-dot blue-dot"></span>
+        파란색
+      </button>
+    </section>
+
     <!-- D-day -->
     <section class="dday">
       <p class="dday-label">수능까지</p>
@@ -221,7 +325,7 @@
         <span class="tag">🌱 식물</span>
       </div>
 
-      <!-- 아래 주소를 본인의 GitHub 주소로 바꾸세요 -->
+      <!-- 본인의 GitHub 주소로 변경하세요 -->
       <a
         class="github-button"
         href="https://github.com/"
@@ -238,20 +342,20 @@
       <p class="help">칸을 눌러서 고칠 수 있어요</p>
 
       <div class="mandalart" id="mandalart">
-        <textarea class="goal-cell">매일 30분 영어 듣기</textarea>
-        <textarea class="goal-cell">국어 오답노트</textarea>
-        <textarea class="goal-cell">주 3회 운동</textarea>
+        <textarea class="goal-cell" aria-label="목표 1">매일 30분 영어 듣기</textarea>
+        <textarea class="goal-cell" aria-label="목표 2">국어 오답노트</textarea>
+        <textarea class="goal-cell" aria-label="목표 3">주 3회 운동</textarea>
 
-        <textarea class="goal-cell">독서 월 2권</textarea>
-        <textarea class="goal-cell center">전기정보공학 진학</textarea>
-        <textarea class="goal-cell">과학 동아리 발표</textarea>
+        <textarea class="goal-cell" aria-label="목표 4">독서 월 2권</textarea>
+        <textarea class="goal-cell center" aria-label="중심 목표">전기정보공학 진학</textarea>
+        <textarea class="goal-cell" aria-label="목표 6">과학 동아리 발표</textarea>
 
-        <textarea class="goal-cell">7시간 수면</textarea>
-        <textarea class="goal-cell">봉사활동 20시간</textarea>
-        <textarea class="goal-cell">코딩 포트폴리오</textarea>
+        <textarea class="goal-cell" aria-label="목표 7">7시간 수면</textarea>
+        <textarea class="goal-cell" aria-label="목표 8">봉사활동 20시간</textarea>
+        <textarea class="goal-cell" aria-label="목표 9">코딩 포트폴리오</textarea>
       </div>
 
-      <button class="reset-button" id="resetButton">
+      <button class="reset-button" id="resetButton" type="button">
         처음 목표로 되돌리기
       </button>
     </section>
@@ -261,6 +365,48 @@
   <script>
     // D-day를 D-390으로 고정
     document.getElementById("ddayNumber").textContent = "D-390";
+
+    // 초록색 / 파란색 테마 선택
+    const greenButton = document.getElementById("greenTheme");
+    const blueButton = document.getElementById("blueTheme");
+
+    function setTheme(theme) {
+      const isBlue = theme === "blue";
+
+      document.body.classList.toggle("theme-blue", isBlue);
+
+      greenButton.setAttribute("aria-pressed", String(!isBlue));
+      blueButton.setAttribute("aria-pressed", String(isBlue));
+
+      // 선택한 색상 저장
+      try {
+        localStorage.setItem(
+          "myPageTheme",
+          isBlue ? "blue" : "green"
+        );
+      } catch (error) {
+        console.log("테마 설정을 저장하지 못했습니다.");
+      }
+    }
+
+    greenButton.addEventListener("click", () => {
+      setTheme("green");
+    });
+
+    blueButton.addEventListener("click", () => {
+      setTheme("blue");
+    });
+
+    // 저장된 색상 불러오기
+    try {
+      const savedTheme = localStorage.getItem("myPageTheme");
+
+      if (savedTheme === "blue" || savedTheme === "green") {
+        setTheme(savedTheme);
+      }
+    } catch (error) {
+      console.log("테마 설정을 불러오지 못했습니다.");
+    }
 
     // 만다라트 목표 저장 기능
     const cells = document.querySelectorAll(".goal-cell");
@@ -296,13 +442,18 @@
       console.log("저장된 목표를 불러오지 못했습니다.");
     }
 
-    // 목표를 수정할 때 자동 저장
+    // 목표를 수정하면 자동 저장
     cells.forEach((cell) => {
       cell.addEventListener("input", () => {
-        const goals = Array.from(cells).map((item) => item.value);
+        const goals = Array.from(cells).map(
+          (item) => item.value
+        );
 
         try {
-          localStorage.setItem(storageKey, JSON.stringify(goals));
+          localStorage.setItem(
+            storageKey,
+            JSON.stringify(goals)
+          );
         } catch (error) {
           console.log("목표를 저장하지 못했습니다.");
         }
