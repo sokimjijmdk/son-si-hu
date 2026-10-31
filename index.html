@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나의 공간</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      color: #263247;
+      background: linear-gradient(135deg, #e0f2fe, #f3e8ff, #fce7f3);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 38px;
+    }
+
+    .main-emoji {
+      font-size: 58px;
+      line-height: 1.2;
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(30px, 6vw, 44px);
+    }
+
+    .intro {
+      margin: 0;
+      color: #64748b;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .menu-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 22px 26px;
+      text-align: center;
+      text-decoration: none;
+      color: inherit;
+      background: rgba(255, 255, 255, 0.94);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 26px;
+      box-shadow: 0 12px 32px rgba(55, 65, 81, 0.09);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 38px rgba(55, 65, 81, 0.15);
+    }
+
+    .menu-card:focus-visible {
+      outline: 4px solid #647ff2;
+      outline-offset: 4px;
+    }
+
+    .menu-icon {
+      width: 112px;
+      height: 112px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      border-radius: 30px;
+      font-size: 58px;
+    }
+
+    .goal-icon { background: #dcfce7; }
+    .games-icon { background: #dbeafe; }
+
+    .menu-card h2 {
+      margin: 0 0 10px;
+      font-size: 25px;
+    }
+
+    .menu-card p {
+      min-height: 52px;
+      margin: 0;
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .go-button {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 12px 24px;
+      border-radius: 999px;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .goal-button { background: #22a06b; }
+    .games-button { background: #4f7df3; }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        align-items: flex-start;
+        padding-top: 42px;
+      }
+
+      header { margin-bottom: 28px; }
+
+      .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .menu-card { padding: 25px 18px 22px; }
+
+      .menu-icon {
+        width: 88px;
+        height: 88px;
+        font-size: 46px;
+      }
+
+      .menu-card p { min-height: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .menu-card { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <div class="main-emoji">🌈</div>
+      <h1>나의 공간</h1>
+      <p class="intro">
+        목표를 계획하고, 재미있는 게임도 즐겨보세요!<br>
+        원하는 공간을 선택해 주세요.
+      </p>
+    </header>
+
+    <section class="menu-grid">
+      <!-- 만다라트 페이지로 이동 -->
+      <a class="menu-card" href="./goal/index.html">
+        <div class="menu-icon goal-icon">🎯</div>
+        <h2>나의 만다라트</h2>
+        <p>목표를 세우고 작은 실천 계획을 정리해 보세요.</p>
+        <span class="go-button goal-button">만다라트 바로가기 →</span>
+      </a>
+
+      <!-- 게임 페이지로 이동 -->
+      <a class="menu-card" href="./game/index.html">
+        <div class="menu-icon games-icon">🎮</div>
+        <h2>게임 놀이터</h2>
+        <p>여러 가지 게임을 골라 신나게 플레이해 보세요.</p>
+        <span class="go-button games-button">게임하러 가기 →</span>
+      </a>
+    </section>
+
+    <footer>
+      <p>✨ 나만의 작은 웹 공간 ✨</p>
+    </footer>
+  </main>
+</body>
+</html>
