@@ -1,0 +1,482 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>같은 그림 찾기 게임</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px 12px;
+      min-height: 100vh;
+      font-family: sans-serif;
+      background: #f3efff;
+      color: #393052;
+      text-align: center;
+    }
+
+    .game {
+      width: 100%;
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 22px 14px;
+      background: white;
+      border-radius: 25px;
+      box-shadow: 0 5px 25px #00000012;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin: 5px 0 8px;
+    }
+
+    .description {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 22px;
+    }
+
+    .info {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .info-box {
+      flex: 1;
+      padding: 12px 5px;
+      background: #f1edff;
+      border-radius: 15px;
+    }
+
+    .info-box p {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #8275a8;
+    }
+
+    .info-box strong {
+      font-size: 22px;
+      color: #7454c8;
+    }
+
+    /* 4x4 카드판 */
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      width: 100%;
+      margin: 20px auto;
+    }
+
+    /* 카드 바깥쪽 */
+    .card {
+      aspect-ratio: 1 / 1;
+      border: none;
+      background: transparent;
+      padding: 0;
+      perspective: 700px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    /* 카드 뒤집기 애니메이션 */
+    .card-inner {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s;
+    }
+
+    .card.flipped .card-inner,
+    .card.matched .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* 카드 앞면과 뒷면 */
+    .card-front,
+    .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    /* 뒤집기 전 보이는 면 */
+    .card-front {
+      background: #8b70d6;
+      color: white;
+      font-size: clamp(22px, 8vw, 35px);
+      box-shadow: 0 3px 5px #00000015;
+    }
+
+    /* 그림이 있는 면 */
+    .card-back {
+      background: #f4f0ff;
+      border: 2px solid #d9ceff;
+      font-size: clamp(25px, 9vw, 43px);
+      transform: rotateY(180deg);
+      box-shadow: 0 3px 5px #00000010;
+    }
+
+    .card.matched .card-back {
+      background: #e0f7e8;
+      border-color: #80c99a;
+    }
+
+    .card:disabled {
+      cursor: default;
+    }
+
+    /* 시작 버튼 */
+    .start-button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 15px;
+      background: #7454c8;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .start-button:active {
+      transform: scale(0.98);
+    }
+
+    #message {
+      min-height: 30px;
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #7454c8;
+      line-height: 1.5;
+    }
+
+    .tip {
+      color: #aaa;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="game">
+
+    <h1>🧠 같은 그림 찾기</h1>
+
+    <div class="description">
+      같은 그림이 있는 카드 두 장을 찾아보세요!
+    </div>
+
+    <!-- 게임 정보 -->
+    <div class="info">
+
+      <div class="info-box">
+        <p>뒤집은 횟수</p>
+        <strong id="moves">0</strong>
+      </div>
+
+      <div class="info-box">
+        <p>걸린 시간</p>
+        <strong id="timer">0초</strong>
+      </div>
+
+      <div class="info-box">
+        <p>찾은 쌍</p>
+        <strong id="matches">0 / 8</strong>
+      </div>
+
+    </div>
+
+    <!-- 카드 16장 -->
+    <div class="board" id="board"></div>
+
+    <button class="start-button" id="startButton">
+      게임 시작!
+    </button>
+
+    <div id="message">
+      시작 버튼을 눌러 게임을 시작하세요!
+    </div>
+
+    <div class="tip">
+      기억력을 발휘해서 8개의 그림을 모두 찾아보세요!
+    </div>
+
+  </div>
+
+  <script>
+
+    // 게임에 사용할 그림 8종류
+    const pictures = [
+      "🐶", "🐱", "🐰", "🐻",
+      "🦊", "🐼", "🐸", "🐵"
+    ];
+
+    // 게임 변수
+    let cards = [];
+    let firstCard = null;
+    let secondCard = null;
+
+    let moves = 0;
+    let matches = 0;
+    let seconds = 0;
+
+    let locked = false;
+    let gameStarted = false;
+
+    let timerInterval = null;
+    let mismatchTimeout = null;
+
+    // HTML 요소
+    const board = document.getElementById("board");
+    const movesText = document.getElementById("moves");
+    const timerText = document.getElementById("timer");
+    const matchesText = document.getElementById("matches");
+    const message = document.getElementById("message");
+    const startButton = document.getElementById("startButton");
+
+    // 그림 카드 섞기
+    function shuffle(array) {
+
+      for (let i = array.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+
+        [array[i], array[j]] = [array[j], array[i]];
+
+      }
+
+      return array;
+    }
+
+    // 카드 만들기
+    function createCards() {
+
+      board.innerHTML = "";
+
+      // 그림을 두 장씩 복사
+      cards = shuffle([...pictures, ...pictures]);
+
+      cards.forEach((picture, index) => {
+
+        const card = document.createElement("button");
+
+        card.className = "card";
+        card.type = "button";
+        card.setAttribute("aria-label", "뒤집힌 카드");
+
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">?</div>
+            <div class="card-back">${picture}</div>
+          </div>
+        `;
+
+        card.addEventListener("click", () => {
+          flipCard(card, picture);
+        });
+
+        board.appendChild(card);
+
+      });
+
+    }
+
+    // 카드 뒤집기
+    function flipCard(card, picture) {
+
+      // 게임이 끝났거나 카드를 처리 중이면 무시
+      if (!gameStarted || locked) return;
+
+      // 이미 뒤집힌 카드는 무시
+      if (
+        card.classList.contains("flipped") ||
+        card.classList.contains("matched")
+      ) {
+        return;
+      }
+
+      // 첫 번째 카드
+      if (firstCard === null) {
+
+        firstCard = {
+          element: card,
+          picture: picture
+        };
+
+        card.classList.add("flipped");
+        card.setAttribute("aria-label", picture);
+
+        return;
+      }
+
+      // 두 번째 카드
+      secondCard = {
+        element: card,
+        picture: picture
+      };
+
+      card.classList.add("flipped");
+      card.setAttribute("aria-label", picture);
+
+      // 두 장을 뒤집었으므로 횟수 증가
+      moves++;
+
+      movesText.textContent = moves;
+
+      // 두 그림이 같은지 확인
+      checkMatch();
+
+    }
+
+    // 그림이 같은지 확인
+    function checkMatch() {
+
+      locked = true;
+
+      if (firstCard.picture === secondCard.picture) {
+
+        // 같은 그림이면 그대로 유지
+        firstCard.element.classList.add("matched");
+        secondCard.element.classList.add("matched");
+
+        firstCard.element.disabled = true;
+        secondCard.element.disabled = true;
+
+        firstCard.element.setAttribute("aria-label", "찾은 카드 " + firstCard.picture);
+        secondCard.element.setAttribute("aria-label", "찾은 카드 " + secondCard.picture);
+
+        matches++;
+
+        matchesText.textContent = matches + " / 8";
+
+        message.textContent = "🎉 정답이에요!";
+
+        firstCard = null;
+        secondCard = null;
+
+        locked = false;
+
+        // 8쌍을 모두 찾으면 종료
+        if (matches === 8) {
+          finishGame();
+        }
+
+      } else {
+
+        // 다른 그림이면 잠시 기다렸다가 다시 뒤집기
+        message.textContent = "아쉽네요! 다시 기억해 보세요.";
+
+        mismatchTimeout = setTimeout(() => {
+
+          firstCard.element.classList.remove("flipped");
+          secondCard.element.classList.remove("flipped");
+
+          firstCard.element.setAttribute("aria-label", "뒤집힌 카드");
+          secondCard.element.setAttribute("aria-label", "뒤집힌 카드");
+
+          firstCard = null;
+          secondCard = null;
+
+          locked = false;
+
+          message.textContent = "다른 그림을 찾아보세요!";
+
+        }, 900);
+
+      }
+
+    }
+
+    // 시간 표시
+    function startTimer() {
+
+      clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+
+        seconds++;
+
+        timerText.textContent = seconds + "초";
+
+      }, 1000);
+
+    }
+
+    // 게임 종료
+    function finishGame() {
+
+      gameStarted = false;
+
+      clearInterval(timerInterval);
+
+      locked = true;
+
+      message.textContent =
+        "🏆 성공! " + seconds + "초 동안 " +
+        moves + "번 뒤집어서 모두 찾았어요!";
+
+      startButton.textContent = "다시 플레이하기!";
+
+    }
+
+    // 게임 시작 및 초기화
+    function startGame() {
+
+      clearInterval(timerInterval);
+      clearTimeout(mismatchTimeout);
+
+      moves = 0;
+      matches = 0;
+      seconds = 0;
+
+      firstCard = null;
+      secondCard = null;
+
+      locked = false;
+      gameStarted = true;
+
+      movesText.textContent = "0";
+      timerText.textContent = "0초";
+      matchesText.textContent = "0 / 8";
+
+      message.textContent = "같은 그림 두 장을 찾아보세요!";
+
+      startButton.textContent = "게임 진행 중...";
+
+      createCards();
+
+      startTimer();
+
+    }
+
+    // 시작 버튼 연결
+    startButton.addEventListener("click", startGame);
+
+    // 처음 화면에도 카드 배치
+    createCards();
+
+  </script>
+
+</body>
+</html>
