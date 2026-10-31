@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나의 미니게임 모음</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #eef7f0;
+      --card: #ffffff;
+      --text: #24452d;
+      --muted: #718276;
+      --accent: #43a047;
+      --accent-light: #e5f4e7;
+      --shadow: 0 8px 28px #23452d14;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 32px 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, #dff2e2 0, transparent 38%),
+        var(--bg);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 26px 12px 30px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 15px 0 9px;
+      font-size: clamp(29px, 7vw, 42px);
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .games {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .game-card {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 22px;
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid #e7eee8;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px #23452d20;
+    }
+
+    .game-card:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .game-icon {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      margin-bottom: 17px;
+      border-radius: 18px;
+      background: var(--accent-light);
+      font-size: 34px;
+    }
+
+    .game-card h2 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
+
+    .game-card p {
+      flex: 1;
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+      word-break: keep-all;
+    }
+
+    .play {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .play span:last-child { font-size: 18px; }
+
+    .add-guide {
+      margin-top: 22px;
+      padding: 18px 20px;
+      border: 1px dashed #b9d7be;
+      border-radius: 18px;
+      background: #ffffffa8;
+    }
+
+    .add-guide h2 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .add-guide p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: #edf2ee;
+      color: #315c39;
+    }
+
+    footer {
+      padding: 24px 8px 8px;
+      text-align: center;
+      color: #91a095;
+      font-size: 12px;
+    }
+
+    @media (max-width: 520px) {
+      body { padding: 18px 13px; }
+      header { padding: 22px 8px 24px; }
+      .games { grid-template-columns: 1fr; gap: 13px; }
+
+      .game-card {
+        display: grid;
+        grid-template-columns: 62px 1fr;
+        column-gap: 15px;
+        padding: 17px;
+      }
+
+      .game-icon {
+        grid-row: 1 / span 2;
+        margin: 0;
+      }
+
+      .game-card h2 { align-self: end; }
+      .game-card p { margin: 5px 0 12px; }
+      .play { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <span class="eyebrow">🎮 MY MINI GAME ROOM</span>
+      <h1>나의 미니게임 모음</h1>
+      <p class="intro">하고 싶은 게임을 골라서 플레이해 보세요!</p>
+    </header>
+
+    <section class="games" id="gameList" aria-label="게임 목록">
+    </section>
+
+    <section class="add-guide">
+      <h2>💡 게임을 추가하는 방법</h2>
+      <p>
+        새 게임 HTML 파일을 이 index.html과 같은 폴더에 넣고,
+        아래 JavaScript의 games 목록에 게임 이름, 설명,
+        아이콘, 파일 이름을 추가하면 됩니다.
+      </p>
+    </section>
+
+    <footer>즐겁게 플레이하고 새로운 게임도 계속 추가해 보세요!</footer>
+  </main>
+
+  <script>
+    // 새 게임을 추가할 때 이 목록에 한 항목씩 추가하세요.
+    const games = [
+      {
+        title: "두더지 잡기",
+        description: "30초 동안 나타나는 두더지를 빠르게 잡아 최고 점수에 도전하세요.",
+        icon: "🐹",
+        file: "game1.html"
+      },
+      {
+        title: "반응속도 테스트",
+        description: "화면이 초록색으로 바뀌는 순간 터치해서 반응속도를 측정하세요.",
+        icon: "⚡",
+        file: "game2.html"
+      },
+      {
+        title: "같은 그림 찾기",
+        description: "카드 16장 속에 숨겨진 같은 그림 8쌍을 모두 찾아보세요.",
+        icon: "🧠",
+        file: "game3.html"
+      }
+    ];
+
+    const gameList = document.getElementById("gameList");
+
+    games.forEach((game) => {
+      const link = document.createElement("a");
+      link.className = "game-card";
+      link.href = game.file;
+
+      link.innerHTML = `
+        <div class="game-icon" aria-hidden="true">${game.icon}</div>
+        <h2>${game.title}</h2>
+        <p>${game.description}</p>
+        <div class="play">
+          <span>게임 시작하기</span>
+          <span aria-hidden="true">→</span>
+        </div>
+      `;
+
+      gameList.appendChild(link);
+    });
+  </script>
+</body>
+</html>
