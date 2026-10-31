@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>반응속도 테스트</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .game {
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      background: white;
+      border-radius: 25px;
+      padding: 25px 18px;
+      box-shadow: 0 5px 25px #00000015;
+    }
+
+    h1 {
+      font-size: 27px;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .info-box {
+      flex: 1;
+      background: #f3f3f3;
+      border-radius: 15px;
+      padding: 12px 5px;
+    }
+
+    .info-box p {
+      color: #777;
+      font-size: 13px;
+      margin: 0 0 7px;
+    }
+
+    .info-box strong {
+      font-size: 23px;
+    }
+
+    /* 반응속도 테스트 화면 */
+    #reactionArea {
+      width: 100%;
+      height: 330px;
+      border: none;
+      border-radius: 20px;
+      background: #e53935;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    #reactionArea.green {
+      background: #2eaf50;
+    }
+
+    #reactionArea:active {
+      filter: brightness(0.95);
+    }
+
+    #result {
+      min-height: 55px;
+      margin: 20px 0 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    #startButton {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 15px;
+      background: #333;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    #startButton:active {
+      transform: scale(0.98);
+    }
+
+    #history {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+      line-height: 2;
+    }
+
+    .tip {
+      margin-top: 15px;
+      color: #aaa;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="game">
+
+    <h1>⚡ 반응속도 테스트</h1>
+
+    <div class="description">
+      초록색으로 바뀌는 순간 최대한 빠르게 터치!
+    </div>
+
+    <div class="info">
+      <div class="info-box">
+        <p>진행 횟수</p>
+        <strong id="round">0 / 5</strong>
+      </div>
+
+      <div class="info-box">
+        <p>평균 반응속도</p>
+        <strong id="average">-</strong>
+      </div>
+    </div>
+
+    <!-- 반응속도 테스트 화면 -->
+    <div id="reactionArea">
+      <div id="mainText">시작 버튼을 눌러!</div>
+      <div id="subText" style="font-size:16px; margin-top:15px;">
+        준비됐나요?
+      </div>
+    </div>
+
+    <div id="result">
+      총 5번의 테스트를 진행합니다.
+    </div>
+
+    <button id="startButton">
+      테스트 시작!
+    </button>
+
+    <div id="history">
+      아직 기록이 없습니다.
+    </div>
+
+    <div class="tip">
+      빨간색일 때 누르면 처음부터 다시 도전해야 해요!
+    </div>
+
+  </div>
+
+  <script>
+
+    // 게임 변수
+    let round = 0;
+    let times = [];
+    let state = "ready";
+
+    let startTime = 0;
+    let waitTimer = null;
+
+    const reactionArea = document.getElementById("reactionArea");
+    const mainText = document.getElementById("mainText");
+    const subText = document.getElementById("subText");
+
+    const result = document.getElementById("result");
+    const startButton = document.getElementById("startButton");
+
+    const roundText = document.getElementById("round");
+    const averageText = document.getElementById("average");
+    const history = document.getElementById("history");
+
+    // 빨간색 화면으로 설정
+    function setRed() {
+      reactionArea.classList.remove("green");
+      mainText.textContent = "기다리세요!";
+      subText.textContent = "초록색이 되면 터치!";
+    }
+
+    // 초록색 화면으로 설정
+    function setGreen() {
+      reactionArea.classList.add("green");
+      mainText.textContent = "지금 터치!";
+      subText.textContent = "빠르게!";
+      state = "green";
+
+      startTime = performance.now();
+    }
+
+    // 한 번의 테스트 시작
+    function startRound() {
+      state = "waiting";
+
+      setRed();
+
+      result.textContent = "초록색으로 바뀔 때까지 기다리세요.";
+
+      // 1.5초 ~ 5초 사이 랜덤 대기
+      const randomTime = Math.floor(
+        Math.random() * 3500 + 1500
+      );
+
+      waitTimer = setTimeout(() => {
+        if (state === "waiting") {
+          setGreen();
+        }
+      }, randomTime);
+    }
+
+    // 화면을 터치했을 때
+    function handleTouch() {
+
+      if (state === "waiting") {
+
+        // 너무 빨리 누른 경우
+        clearTimeout(waitTimer);
+
+        state = "ready";
+
+        reactionArea.classList.remove("green");
+        mainText.textContent = "너무 빨라요!";
+        subText.textContent = "다시 시작 버튼을 눌러주세요.";
+
+        result.textContent = "반응속도 테스트에 실패했어요!";
+
+        startButton.textContent = "다시 도전하기!";
+
+        return;
+      }
+
+      if (state === "green") {
+
+        // 반응속도 계산
+        const reactionTime = Math.round(
+          performance.now() - startTime
+        );
+
+        times.push(reactionTime);
+
+        round++;
+
+        roundText.textContent = round + " / 5";
+
+        mainText.textContent = reactionTime + " ms";
+        subText.textContent = "반응속도 측정 완료!";
+
+        reactionArea.classList.remove("green");
+
+        result.textContent =
+          round + "번째 기록: " + reactionTime + "ms";
+
+        state = "result";
+
+        // 기록 표시
+        history.innerHTML = times.map((time, index) =>
+          (index + 1) + "번째: " + time + "ms"
+        ).join("<br>");
+
+        if (round === 5) {
+          finishGame();
+        } else {
+          startButton.textContent = "다음 테스트";
+        }
+      }
+    }
+
+    // 게임 종료 및 평균 계산
+    function finishGame() {
+
+      const total = times.reduce(
+        (sum, time) => sum + time, 0
+      );
+
+      const average = Math.round(total / 5);
+
+      averageText.textContent = average + "ms";
+
+      mainText.textContent = average + "ms";
+      subText.textContent = "평균 반응속도";
+
+      result.textContent =
+        "🎉 테스트 완료! 평균 반응속도는 " +
+        average + "ms 입니다!";
+
+      startButton.textContent = "다시 도전하기!";
+
+      state = "finished";
+    }
+
+    // 게임 초기화
+    function startGame() {
+
+      clearTimeout(waitTimer);
+
+      round = 0;
+      times = [];
+
+      roundText.textContent = "0 / 5";
+      averageText.textContent = "-";
+
+      history.textContent = "측정 중...";
+
+      startButton.textContent = "테스트 진행 중...";
+
+      startRound();
+    }
+
+    // 이벤트 연결
+    reactionArea.addEventListener("pointerdown", (event) => {
+      event.preventDefault();
+      handleTouch();
+    });
+
+    startButton.addEventListener("click", () => {
+
+      if (state === "waiting" ||
+          state === "green") {
+        return;
+      }
+
+      startGame();
+
+    });
+
+  </script>
+
+</body>
+</html>
